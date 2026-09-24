@@ -1,5 +1,5 @@
 export interface AuthedUser {
-  id: number;
+  id: string;
   google_id: string;
   email: string;
   display_name: string;
@@ -18,9 +18,9 @@ export interface DashboardStats {
 }
 
 export interface Campaign {
-  id: number;
-  user_id: number;
-  sender_id: number;
+  id: string;
+  user_id: string;
+  sender_id: string;
   subject: string;
   body: string;
   start_time: string;
@@ -35,7 +35,7 @@ export interface Campaign {
 }
 
 export interface Delivery {
-  id: number;
+  id: string;
   delivery_uid: string;
   to_email: string;
   to_name: string;
@@ -43,7 +43,7 @@ export interface Delivery {
   status: string;
   scheduled_time?: string;
   actual_send_time?: string;
-  campaign_id: number;
+  campaign_id: string;
   attempts: number;
   last_error?: string;
   ethereal_preview_url?: string;
@@ -66,12 +66,12 @@ export interface ParseResult {
 }
 
 export interface SenderConfig {
-  id: number;
+  id: string;
   from_name: string;
   from_email: string;
   hourly_limit: number;
   min_delay_sec: number;
-  is_active: number;
+  is_active: boolean;
 }
 
 export interface SlackStatus {

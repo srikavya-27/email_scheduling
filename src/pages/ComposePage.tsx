@@ -15,15 +15,15 @@ export function ComposePage({ senders, onToast }: ComposePageProps) {
   const [startTime, setStartTime] = useState('');
   const [minDelay, setMinDelay] = useState(60);
   const [hourlyLimit, setHourlyLimit] = useState(50);
-  const [senderId, setSenderId] = useState<number>(0);
+  const [senderId, setSenderId] = useState<string>('');
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [uploading, setUploading] = useState(false);
   const [scheduling, setScheduling] = useState(false);
   const [fileName, setFileName] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const activeSender = senders.find((s) => s.is_active === 1);
-  const effectiveSenderId = senderId || activeSender?.id || 0;
+  const activeSender = senders.find((s) => s.is_active === true);
+  const effectiveSenderId = senderId || activeSender?.id || '';
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -46,8 +46,7 @@ export function ComposePage({ senders, onToast }: ComposePageProps) {
     if (!subject.trim()) return onToast('Subject is required', 'error');
     if (!body.trim()) return onToast('Body is required', 'error');
     if (!startTime) return onToast('Start time is required', 'error');
-    if (!effectiveSenderId) return onToast('No sender configured', 'error');
-    if (!parseResult || parseResult.recipients.length === 0) return onToast('Please upload recipients', 'error');
+    if (!effectiveSenderId) return onToast('No sender configured', 'error');    if (!parseResult || parseResult.recipients.length === 0) return onToast('Please upload recipients', 'error');
 
     setScheduling(true);
     try {
@@ -90,7 +89,7 @@ export function ComposePage({ senders, onToast }: ComposePageProps) {
             onChange={(e) => setSenderId(Number(e.target.value))}
             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
           >
-            {senders.length === 0 && <option value={0}>No senders available</option>}
+            {senders.length === 0 && <option value="">No senders available</option>}
             {senders.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.from_name} ({s.from_email}) - {s.hourly_limit}/hr

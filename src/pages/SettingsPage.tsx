@@ -37,7 +37,7 @@ export function SettingsPage({ onToast }: SettingsPageProps) {
   }, []);
 
   const handleSlackConnect = () => {
-    window.location.href = api.slack.connect();
+    onToast('Slack integration requires server-side OAuth setup. Not yet configured.', 'info');
   };
 
   const handleSlackDisconnect = async () => {
@@ -50,7 +50,7 @@ export function SettingsPage({ onToast }: SettingsPageProps) {
     }
   };
 
-  const handleUpdateSender = async (id: number, field: string, value: number) => {
+  const handleUpdateSender = async (id: string, field: string, value: number) => {
     setSaving(true);
     try {
       await api.dashboard.updateSender(id, { [field]: value } as any);

@@ -14,7 +14,7 @@ import { SentPage } from './pages/SentPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 function App() {
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout, signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth();
   const { toast, show } = useToast();
   const [page, setPage] = useState('dashboard');
   const [senders, setSenders] = useState<SenderConfig[]>([]);
@@ -34,7 +34,7 @@ function App() {
   }
 
   if (!user) {
-    return <LoginPage />;
+    return <LoginPage onGoogleLogin={signInWithGoogle} onEmailSignIn={signInWithEmail} onEmailSignUp={signUpWithEmail} />;
   }
 
   return (
