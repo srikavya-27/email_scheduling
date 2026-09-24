@@ -11,18 +11,22 @@ export function LoginPage({ onGoogleLogin, onEmailSignIn, onEmailSignUp }: Login
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleGoogle = async () => {
     setError(null);
-    setBusy(true);
+    setGoogleBusy(true);
     try {
       await onGoogleLogin();
+      // If we get here without redirecting, it means OAuth didn't fire
+      // (e.g. provider not enabled). Show a helpful message.
+      setGoogleBusy(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Google sign-in failed. Try email sign-in below.');
-      setBusy(false);
+      setError(err instanceof Error ? err.message : 'Google sign-in is not available. Use email/password below.');
+      setGoogleBusy(false);
     }
   };
 
@@ -34,13 +38,17 @@ export function LoginPage({ onGoogleLogin, onEmailSignIn, onEmailSignUp }: Login
       setError('Email and password are required.');
       return;
     }
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
     setBusy(true);
     try {
       if (mode === 'signin') {
         await onEmailSignIn(email.trim(), password);
       } else {
         await onEmailSignUp(email.trim(), password);
-        setInfo('Account created. You are now signed in.');
+        setInfo('Account created successfully. You are now signed in.');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Authentication failed.');
@@ -79,13 +87,13 @@ export function LoginPage({ onGoogleLogin, onEmailSignIn, onEmailSignUp }: Login
 
           <button
             onClick={handleGoogle}
-            disabled={busy}
+            disabled={googleBusy || busy}
             className="w-full flex items-center justify-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {busy ? (
+            {googleBusy ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
-                Redirecting...
+                Redirecting to Google...
               </>
             ) : (
               <>
